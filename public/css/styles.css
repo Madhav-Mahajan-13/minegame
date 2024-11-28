@@ -1,0 +1,148 @@
+body {
+    background-color: #1a2028;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.game-container {
+    display: flex;
+    background-color: #232c38;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.controls {
+    width: 300px;
+    margin-right: 20px;
+}
+
+.mode-toggle, .bet-input, .mines-gems-section, .profit-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.mode-toggle button, .bet-input button, .action-button {
+    background-color: #2d3848;
+    border: none;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.mode-toggle button.active {
+    background-color: #3a4757;
+}
+
+input[type="number"] {
+    background-color: #1a2028;
+    border: 1px solid #3a4757;
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.action-button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+}
+
+.action-button.cashout {
+    background-color: #4caf50;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+}
+
+.tile {
+    width: 60px;
+    height: 60px;
+    background-color: #2d3848;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    transition: background-color 0.3s ease;
+}
+
+.tile.revealed.gem {
+    background-color: #4caf50; /* Green color for revealed safe tiles */
+}
+
+.tile.bomb {
+    background-color: #f44336; /* Red color for bomb tiles */
+}
+
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #1a2028;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+.brand {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.fairness-button {
+    background-color: #2d3848;
+    border: none;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.icon-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px;
+    margin: 0 5px;
+}
+
+.mode-toggle button, .bet-input button, .action-button {
+    background-color: #2d3848;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.mines-gems-section{
+    margin-right: 5px;
+}
+.btnmines{
+    padding-right:  5px;;
+    margin-right:15px;
+}
