@@ -1,5 +1,6 @@
 # Mines & Mingle - Orientation Game
 <img width="1208" height="906" alt="image" src="https://github.com/user-attachments/assets/0d23367b-3d6b-4399-a636-ee93f6381a87" />
+https://minegame-arc.vercel.app/
 
 Welcome to **Mines & Mingle**! This is a simple, elegant, and engaging Minesweeper-style game designed as a fun icebreaker and time-killer for a society's orientation meet. Its premium, minimalist design ensures a pleasant user experience, allowing new members to relax and have fun.
 
