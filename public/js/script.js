@@ -11,193 +11,203 @@ document.addEventListener('DOMContentLoaded', () => {
     const betHalfButton = document.querySelector('.bet-half');
     const betDoubleButton = document.querySelector('.bet-double');
 
-    let mines = parseInt(minesInput.value);
-    let gems = parseInt(gemsInput.value);
-    let profit = 0;
-    let betAmount = parseFloat(betAmountInput.value);
+    // Game state variables
+    let gameState = {
+        mines: parseInt(minesInput.value),
+        gems: parseInt(gemsInput.value),
+        profit: 0,
+        betAmount: parseFloat(betAmountInput.value),
+        isGameActive: false,
+        revealedCount: 0,
+        mineIndices: [],
+        gameMode: 'manual' // 'manual' or 'auto'
+    };
 
+    // Utility functions
     function updateProfit() {
-        profitElement.textContent = `₹${profit.toFixed(2)}`;
+        profitElement.textContent = `₹${gameState.profit.toFixed(2)}`;
     }
 
     function updateGems() {
-        gemsInput.value = 25 - mines;
+        gameState.gems = 25 - gameState.mines;
+        gemsInput.value = gameState.gems;
+    }
+
+    function calculateProfitMultiplier() {
+        // Better profit calculation based on risk (mines vs gems ratio)
+        const riskRatio = gameState.mines / 25;
+        const baseMultiplier = 0.05; // Base 5% profit per gem
+        const riskBonus = riskRatio * 0.15; // Up to 15% bonus for higher risk
+        return baseMultiplier + riskBonus;
+    }
+
+    function checkWinCondition() {
+        if (gameState.revealedCount === gameState.gems) {
+            // Player won by revealing all gems
+            setTimeout(() => {
+                alert(`Congratulations! You won! Final profit: ₹${gameState.profit.toFixed(2)}`);
+                initializeGame();
+            }, 500);
+            return true;
+        }
+        return false;
+    }
+
+    function revealGrid() {
+        tiles.forEach(tile => {
+            if (tile.dataset.type === 'mine') {
+                tile.classList.add('bomb');
+                tile.textContent = '💣';
+            } else {
+                tile.classList.add('revealed', 'gem');
+                tile.textContent = '💎';
+            }
+        });
+    }
+
+    function endGame() {
+        gameState.isGameActive = false;
+        revealGrid();
+        setTimeout(() => {
+            alert('Game Over! Starting new game...');
+            initializeGame();
+        }, 2000);
     }
 
     function initializeGame() {
-        mines = parseInt(minesInput.value);
-        updateGems();
-        const totalTiles = tiles.length;
+        // Reset game state
+        gameState.mines = parseInt(minesInput.value);
+        gameState.gems = 25 - gameState.mines;
+        gameState.profit = 0;
+        gameState.isGameActive = true;
+        gameState.revealedCount = 0;
+        gameState.mineIndices = [];
 
+        updateGems();
+        updateProfit();
+
+        // Reset all tiles
         tiles.forEach(tile => {
             tile.classList.remove('revealed', 'bomb', 'gem');
             tile.textContent = '';
+            tile.style.pointerEvents = 'auto';
         });
-        profit = 0;
-        updateProfit();
 
-        let mineIndices = [];
-        while (mineIndices.length < mines) {
+        // Generate mine positions
+        const totalTiles = tiles.length;
+        while (gameState.mineIndices.length < gameState.mines) {
             const randomIndex = Math.floor(Math.random() * totalTiles);
-            if (!mineIndices.includes(randomIndex)) {
-                mineIndices.push(randomIndex);
+            if (!gameState.mineIndices.includes(randomIndex)) {
+                gameState.mineIndices.push(randomIndex);
             }
         }
 
+        // Set tile types
         tiles.forEach((tile, index) => {
-            tile.dataset.type = mineIndices.includes(index) ? 'mine' : 'gem';
+            tile.dataset.type = gameState.mineIndices.includes(index) ? 'mine' : 'gem';
         });
     }
 
-    function revealGrid() {
-        tiles.forEach(tile => {
-            if (tile.dataset.type === 'mine') {
-                tile.classList.add('bomb');
-                tile.textContent = '💣';
-            } else {
-                tile.classList.add('revealed', 'gem');
-                tile.textContent = '💎';
+    function handleTileClick(tile) {
+        if (!gameState.isGameActive || tile.classList.contains('revealed')) {
+            return;
+        }
+
+        if (tile.dataset.type === 'mine') {
+            // Hit a mine
+            tile.classList.add('bomb');
+            tile.textContent = '💣';
+            bombSound.play();
+            endGame();
+        } else {
+            // Found a gem
+            tile.classList.add('revealed', 'gem');
+            tile.textContent = '💎';
+            tile.style.pointerEvents = 'none'; // Prevent double-clicking
+            
+            gameState.revealedCount++;
+            
+            // Calculate profit based on risk
+            const multiplier = calculateProfitMultiplier();
+            const profitGain = gameState.betAmount * multiplier;
+            gameState.profit += profitGain;
+            
+            updateProfit();
+            
+            // Check if player won
+            if (checkWinCondition()) {
+                return;
             }
-        });
-    }
-    function revealGrid() {
-        tiles.forEach(tile => {
-            if (tile.dataset.type === 'mine') {
-                tile.classList.add('bomb');
-                tile.textContent = '💣';
-            } else {
-                tile.classList.add('revealed', 'gem');
-                tile.textContent = '💎';
-            }
-        });
+        }
     }
 
-    function endGame() {
-        revealGrid();
-        setTimeout(() => {
-            location.reload();
-        }, 5000); // 5-second delay before reloading
-    }
-
+    // Event Listeners
     tiles.forEach(tile => {
-        tile.addEventListener('click', () => {
-            if (tile.classList.contains('revealed')) return;
-
-            if (tile.dataset.type === 'mine') {
-                tile.classList.add('bomb');
-                tile.textContent = '💣';
-                bombSound.play();
-                endGame();
-            } else {
-                tile.classList.add('revealed', 'gem');
-                tile.textContent = '😊';
-                profit += betAmount * 0.1; // Simple profit calculation, adjust as needed
-                updateProfit();
-            }
-        });
-    });
-    function revealGrid() {
-        tiles.forEach(tile => {
-            if (tile.dataset.type === 'mine') {
-                tile.classList.add('bomb');
-                tile.textContent = '💣';
-            } else {
-                tile.classList.add('revealed', 'gem');
-                tile.textContent = '😊';
-            }
-        });
-    }
-
-    function endGame() {
-        revealGrid();
-        setTimeout(() => {
-            location.reload();
-        }, 5000); // 5-second delay before reloading
-    }
-
-    tiles.forEach(tile => {
-        tile.addEventListener('click', () => {
-            if (tile.classList.contains('revealed')) return;
-
-            if (tile.dataset.type === 'mine') {
-                tile.classList.add('bomb');
-                tile.textContent = '💣';
-                bombSound.play();
-                endGame();
-            } else {
-                tile.classList.add('revealed', 'gem');
-                tile.textContent = '😊';
-                profit += betAmount * 0.1; // Simple profit calculation, adjust as needed
-                updateProfit();
-            }
-        });
-    });
-
-
-    tiles.forEach(tile => {
-        tile.addEventListener('click', () => {
-            if (tile.classList.contains('revealed')) return;
-
-            if (tile.dataset.type === 'mine') {
-                tile.classList.add('bomb');
-                tile.textContent = '💣';
-                bombSound.play();
-                revealGrid();
-                alert('You hit a mine! Game Over.');
-                initializeGame();
-            } else {
-                tile.classList.add('revealed', 'gem');
-                tile.textContent = '😊';
-                profit += betAmount * 0.1; // Simple profit calculation, adjust as needed
-                updateProfit();
-            }
-        });
+        tile.addEventListener('click', () => handleTileClick(tile));
     });
 
     randomTileButton.addEventListener('click', () => {
-        const unrevealedTiles = Array.from(tiles).filter(tile => !tile.classList.contains('revealed'));
+        if (!gameState.isGameActive) return;
+        
+        const unrevealedTiles = Array.from(tiles).filter(tile => 
+            !tile.classList.contains('revealed') && !tile.classList.contains('bomb')
+        );
+        
         if (unrevealedTiles.length > 0) {
             const randomTile = unrevealedTiles[Math.floor(Math.random() * unrevealedTiles.length)];
-            randomTile.click();
+            handleTileClick(randomTile);
         }
     });
 
     cashoutButton.addEventListener('click', () => {
-        alert(`You cashed out with a profit of ₹${profit.toFixed(2)}!`);
+        if (!gameState.isGameActive || gameState.revealedCount === 0) {
+            alert('No profit to cash out!');
+            return;
+        }
+        
+        alert(`You cashed out with a profit of ₹${gameState.profit.toFixed(2)}!`);
         initializeGame();
     });
 
     minesInput.addEventListener('change', () => {
-        mines = parseInt(minesInput.value);
-        if (mines < 1) mines = 1;
-        if (mines > 24) mines = 24;
-        minesInput.value = mines;
+        let newMines = parseInt(minesInput.value);
+        newMines = Math.max(1, Math.min(24, newMines)); // Clamp between 1 and 24
+        minesInput.value = newMines;
+        gameState.mines = newMines;
         updateGems();
         initializeGame();
     });
 
     betAmountInput.addEventListener('change', () => {
-        betAmount = parseFloat(betAmountInput.value);
-        if (betAmount < 0) betAmount = 0;
-        betAmountInput.value = betAmount.toFixed(2);
+        let newBet = parseFloat(betAmountInput.value);
+        newBet = Math.max(0, newBet); // Ensure non-negative
+        betAmountInput.value = newBet.toFixed(2);
+        gameState.betAmount = newBet;
     });
 
     modeToggleButtons.forEach(button => {
         button.addEventListener('click', () => {
             modeToggleButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            // Add functionality for auto mode if needed
+            
+            // Update game mode
+            if (button.textContent.toLowerCase().includes('auto')) {
+                gameState.gameMode = 'auto';
+                // Auto mode logic could be implemented here
+            } else {
+                gameState.gameMode = 'manual';
+            }
         });
     });
 
     betHalfButton.addEventListener('click', () => {
-        betAmount /= 2;
-        betAmountInput.value = betAmount.toFixed(2);
+        gameState.betAmount = Math.max(0, gameState.betAmount / 2);
+        betAmountInput.value = gameState.betAmount.toFixed(2);
     });
 
     betDoubleButton.addEventListener('click', () => {
-        betAmount *= 2;
-        betAmountInput.value = betAmount.toFixed(2);
+        gameState.betAmount *= 2;
+        betAmountInput.value = gameState.betAmount.toFixed(2);
     });
 
     // Initialize the game when the page loads

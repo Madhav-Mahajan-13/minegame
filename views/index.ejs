@@ -3,75 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mines Game</title>
+    <title>Mines Game - Orientation Meet</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <div class="game-container">
-        <div class="controls">
-            <div class="mode-toggle">
-                <button class="active">Manual</button>
-                <button>Auto</button>
-            </div>
-            
-            <div class="bet-section">
-                <label for="betAmount">Bet Amount</label>
-                <div class="bet-input">
-                    <input type="number" id="betAmount" value="0.00">
-                    <button class="currency-toggle">₹</button>
-                    <button class="bet-half">½</button>
-                    <button class="bet-double">2×</button>
-                </div>
-            </div>
-            
-            <div class="mines-gems-section">
-                <div class="btnmines">
-                    <label for="mines">Mines</label>
-                    <input type="number" id="mines" value="5">
-                </div>
-                <div class="btngems">
-                    <label for="gems">Gems</label>
-                    <input type="number" id="gems" value="20" readonly>
-                </div>
-            </div>
 
-            <div class="profit-section">
-                <label>Total profit (1.00×)</label>
-                <div class="profit-display">
-                    <span id="profit">₹0.00</span>
-                    <button class="currency-toggle">₹</button>
+    <div class="main-wrapper">
+        <header class="page-header">
+            <h1>Welcome to the Club!</h1>
+            <p>Break the ice with a quick game of Mines.</p>
+        </header>
+    
+        <div class="game-container">
+            <div class="controls">
+                <div class="control-group">
+                    <div class="mode-toggle">
+                        <button class="active">Manual</button>
+                        <button>Auto</button>
+                    </div>
                 </div>
+    
+                <div class="control-group">
+                    <label for="betAmount">Bet Amount</label>
+                    <div class="bet-input">
+                        <input type="number" id="betAmount" value="0.00">
+                        <button class="bet-half">½</button>
+                        <button class="bet-double">2×</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <div class="mines-gems-section">
+                        <div class="input-group">
+                            <label for="mines">Mines</label>
+                            <input type="number" id="mines" value="5">
+                        </div>
+                        <div class="input-group">
+                            <label for="gems">Gems</label>
+                            <input type="number" id="gems" value="20" readonly>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="control-group">
+                    <label>Total profit (1.00×)</label>
+                    <div class="profit-display">
+                        <span id="profit">₹0.00</span>
+                    </div>
+                </div>
+    
+                <button id="randomTile" class="action-button">Pick random tile</button>
+                <button id="cashout" class="action-button cashout">Cashout</button>
             </div>
-
-            <button id="randomTile" class="action-button">Pick random tile</button>
-            <button id="cashout" class="action-button cashout">Cashout</button>
+    
+            <div class="grid">
+                <% for(let i = 0; i < 25; i++) { %>
+                    <div class="tile" data-index="<%= i %>"></div>
+                <% } %>
+            </div>
         </div>
-
-        <div class="grid">
-            <% for(let i = 0; i < 25; i++) { %>
-                <div class="tile" data-index="<%= i %>"></div>
-            <% } %>
-        </div>
+    
+        <footer class="page-footer">
+            <p>Mines & Mingle | Orientation 2025</p>
+        </footer>
     </div>
 
-    <div class="footer">
-        <button class="icon-button settings"></button>
-        <button class="icon-button fullscreen"></button>
-        <button class="icon-button stats"></button>
-        <button class="icon-button favorite"></button>
-        <div class="brand"></div>
-        <button class="fairness-button"></button>
-    </div>
-
-    <div class="footer">
-        <button class="icon-button settings"></button>
-        <button class="icon-button fullscreen"></button>
-        <button class="icon-button stats"></button>
-        <button class="icon-button favorite"></button>
-    </div>
 
     <audio id="bombSound" src="/sounds/sound.mp3"></audio>
-
     <script src="/js/script.js"></script>
 </body>
 </html>
